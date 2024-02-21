@@ -31,9 +31,11 @@ set(SOURCE_FILES
         sockets/UDPBoundSocket.cpp
         sockets/UDPSocket.cpp
         sockets/Platform.cpp
-
+        
         utils/Logger.cpp
         utils/Buffer.cpp
+
+        capi/detail/capi.cpp
 
         BaseObject.cpp
         ConnectionManager.cpp
@@ -43,7 +45,12 @@ set(SOURCE_FILES
         IOConnection.cpp
         MessageRouter.cpp
         ParameterObject.cpp
-        SessionInfo.cpp)
+        SessionInfo.cpp
+        Device.cpp
+        Common.cpp
+)
+
+  
 
 # if vendor scripts are enabled
 if(ENABLE_VENDOR_SRC)
@@ -52,6 +59,8 @@ endif()
 
 add_library(EIPScanner SHARED ${SOURCE_FILES} ${VENDOR_FILES})
 add_library(EIPScannerS STATIC ${SOURCE_FILES} ${VENDOR_FILES})
+target_include_directories(EIPScanner INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/capi )
+
 
 if(WIN32)
 	target_link_libraries(EIPScanner ws2_32)
