@@ -1,5 +1,7 @@
 /cmake-*
 /build
+.vs
+/out
 .idea
 docs/build/
 docs/source/doxyoutput/
