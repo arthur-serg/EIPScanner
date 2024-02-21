@@ -5,184 +5,213 @@
 #include "utils/Buffer.h"
 #include "EPath.h"
 
-namespace eipScanner {
-namespace cip {
-	using utils::Buffer;
+namespace eipScanner
+{
+	namespace cip
+	{
+		using utils::Buffer;
 
-	enum class EPathSegmentTypes : CipUsint  {
-		CLASS_8_BITS = 0x20,
-		CLASS_16_BITS = 0x21,
-		INSTANCE_8_BITS = 0x24,
-		INSTANCE_16_BITS = 0x25,
-		ATTRIBUTE_8_BITS = 0x30,
-		ATTRIBUTE_16_BITS = 0x31,
-	};
+		enum class EPathSegmentTypes : CipUsint
+		{
+			CLASS_8_BITS = 0x20,
+			CLASS_16_BITS = 0x21,
+			INSTANCE_8_BITS = 0x24,
+			INSTANCE_16_BITS = 0x25,
+			ATTRIBUTE_8_BITS = 0x30,
+			ATTRIBUTE_16_BITS = 0x31,
+		};
 
-	EPath::EPath()
+		EPath::EPath()
 			: _classId{0}
-			, _objectId{0}
-			, _attributeId{0}
-			, _size{0}{
+			  , _objectId{0}
+			  , _attributeId{0}
+			  , _size{0}
+		{
+		}
 
-	}
-
-	EPath::EPath(CipUint classId)
-		: _classId{classId}
-		, _objectId{0}
-		, _attributeId{0}
-		, _size{1} {
-
-	}
-
-	EPath::EPath(CipUint classId, CipUint objectId)
+		EPath::EPath(CipUint classId)
 			: _classId{classId}
-			, _objectId{objectId}
-			, _attributeId{0}
-			, _size{2} {
+			  , _objectId{0}
+			  , _attributeId{0}
+			  , _size{1}
+		{
+		}
 
-	}
-
-	EPath::EPath(CipUint classId, CipUint objectId, CipUint attributeId)
+		EPath::EPath(CipUint classId, CipUint objectId)
 			: _classId{classId}
-			, _objectId{objectId}
-			, _attributeId{attributeId}
-			, _size{3} {
-	}
+			  , _objectId{objectId}
+			  , _attributeId{0}
+			  , _size{2}
+		{
+		}
 
-
-	EPath::EPath(CipUint classId, std::vector<uint8_t> tagString, CipUint objectId)
+		EPath::EPath(CipUint classId, CipUint objectId, CipUint attributeId)
 			: _classId{classId}
-			, _objectId{objectId}
-			, _attributeId{0}
-			, _tagString{tagString}
-			, _size{1 + (tagString.size()%2 ? (tagString.size()/2) + 1 : (tagString.size()/2))} {
-	}
+			  , _objectId{objectId}
+			  , _attributeId{attributeId}
+			  , _size{3}
+		{
+		}
 
-	std::vector<uint8_t> EPath::packPaddedPath(bool use_8_bit_path_segments, bool use_rockwell_bit_path_segments) const {
-		if (_classId == 0x91) {
-            Buffer buffer(_size*2);
-			buffer << static_cast<CipUsint>(_classId);
-			buffer << static_cast<CipUsint>(_tagString.size());
-			buffer << _tagString;
-			if (_tagString.size() % 2) {
-				buffer << static_cast<CipUsint>(0x00);
+
+		EPath::EPath(CipUint classId, std::vector<uint8_t> tagString, CipUint objectId)
+			: _classId{classId}
+			  , _objectId{objectId}
+			  , _attributeId{0}
+			  , _tagString{tagString}
+			  , _size{static_cast<CipUsint>(1 + (tagString.size() % 2 ? (tagString.size() / 2) + 1 : (tagString.size() / 2)))}
+		{
+		}
+
+		std::vector<uint8_t> EPath::packPaddedPath(bool use_8_bit_path_segments,
+		                                           bool use_rockwell_bit_path_segments) const
+		{
+			if (_classId == 0x91)
+			{
+				Buffer buffer(_size * 2);
+				buffer << static_cast<CipUsint>(_classId);
+				buffer << static_cast<CipUsint>(_tagString.size());
+				buffer << _tagString;
+				if (_tagString.size() % 2)
+				{
+					buffer << static_cast<CipUsint>(0x00);
+				}
+				return buffer.data();
 			}
-            return buffer.data();
-		}
-        if (use_rockwell_bit_path_segments)
-        {
-			auto bufferSize = _size > 2 ? (_size*2+2) : (_size > 1 ? (_size*2+2) : (_size*2));
-            Buffer buffer(bufferSize);
+			if (use_rockwell_bit_path_segments)
+			{
+				auto bufferSize = _size > 2 ? (_size * 2 + 2) : (_size > 1 ? (_size * 2 + 2) : (_size * 2));
+				Buffer buffer(bufferSize);
 
-            auto classSegment = static_cast<CipUsint>(EPathSegmentTypes::CLASS_8_BITS);
-            buffer << classSegment << static_cast<CipUsint>(_classId);
+				auto classSegment = static_cast<CipUsint>(EPathSegmentTypes::CLASS_8_BITS);
+				buffer << classSegment << static_cast<CipUsint>(_classId);
 
-            if (_size > 1) {
-                auto instanceSegment = static_cast<CipUint>(EPathSegmentTypes::INSTANCE_16_BITS);
-                buffer << instanceSegment << _objectId;
+				if (_size > 1)
+				{
+					auto instanceSegment = static_cast<CipUint>(EPathSegmentTypes::INSTANCE_16_BITS);
+					buffer << instanceSegment << _objectId;
 
-                if (_size > 2) {
-                    auto attributeSegment = static_cast<CipUint>(EPathSegmentTypes::ATTRIBUTE_16_BITS);
-                    buffer << attributeSegment << _attributeId;
-                }
-            }
-            return buffer.data();
-        }
-        if (use_8_bit_path_segments)
-        {
-            Buffer buffer(_size*2);
+					if (_size > 2)
+					{
+						auto attributeSegment = static_cast<CipUint>(EPathSegmentTypes::ATTRIBUTE_16_BITS);
+						buffer << attributeSegment << _attributeId;
+					}
+				}
+				return buffer.data();
+			}
+			if (use_8_bit_path_segments)
+			{
+				Buffer buffer(_size * 2);
 
-            auto classSegment = static_cast<CipUsint>(EPathSegmentTypes::CLASS_8_BITS);
-            buffer << classSegment << static_cast<CipUsint>(_classId);
+				auto classSegment = static_cast<CipUsint>(EPathSegmentTypes::CLASS_8_BITS);
+				buffer << classSegment << static_cast<CipUsint>(_classId);
 
-            if (_size > 1) {
-                auto instanceSegment = static_cast<CipUsint>(EPathSegmentTypes::INSTANCE_8_BITS);
-                buffer << instanceSegment << static_cast<CipUsint>(_objectId);
+				if (_size > 1)
+				{
+					auto instanceSegment = static_cast<CipUsint>(EPathSegmentTypes::INSTANCE_8_BITS);
+					buffer << instanceSegment << static_cast<CipUsint>(_objectId);
 
-                if (_size > 2) {
-                    auto attributeSegment = static_cast<CipUsint>(EPathSegmentTypes::ATTRIBUTE_8_BITS);
-                    buffer << attributeSegment << static_cast<CipUsint>(_attributeId);
-                }
-            }
+					if (_size > 2)
+					{
+						auto attributeSegment = static_cast<CipUsint>(EPathSegmentTypes::ATTRIBUTE_8_BITS);
+						buffer << attributeSegment << static_cast<CipUsint>(_attributeId);
+					}
+				}
 
-            return buffer.data();            
-        }
-        else
-        {
-            Buffer buffer(_size*4);
+				return buffer.data();
+			}
+			else
+			{
+				Buffer buffer(_size * 4);
 
-            auto classSegment = static_cast<CipUint>(EPathSegmentTypes::CLASS_16_BITS);
-            buffer << classSegment << _classId;
+				auto classSegment = static_cast<CipUint>(EPathSegmentTypes::CLASS_16_BITS);
+				buffer << classSegment << _classId;
 
-            if (_size > 1) {
-                auto instanceSegment = static_cast<CipUint>(EPathSegmentTypes::INSTANCE_16_BITS);
-                buffer << instanceSegment << _objectId;
+				if (_size > 1)
+				{
+					auto instanceSegment = static_cast<CipUint>(EPathSegmentTypes::INSTANCE_16_BITS);
+					buffer << instanceSegment << _objectId;
 
-                if (_size > 2) {
-                    auto attributeSegment = static_cast<CipUint>(EPathSegmentTypes::ATTRIBUTE_16_BITS);
-                    buffer << attributeSegment << _attributeId;
-                }
-            }
+					if (_size > 2)
+					{
+						auto attributeSegment = static_cast<CipUint>(EPathSegmentTypes::ATTRIBUTE_16_BITS);
+						buffer << attributeSegment << _attributeId;
+					}
+				}
 
-            return buffer.data();
-        }
-	}
-
-	CipUint EPath::getClassId() const {
-		return _classId;
-	}
-
-	CipUint EPath::getObjectId() const {
-		return _objectId;
-	}
-
-	CipUint EPath::getAttributeId() const {
-		return _attributeId;
-	}
-
-	CipUsint EPath::getSizeInWords(bool use_8_bit_path_segments, bool use_rockwell_bit_path_segments) const {
-		if (_classId == 0x91) {
-			return _size;
-		}
-		if (use_rockwell_bit_path_segments) {
-			return _size > 2 ? (_size+2) : (_size > 1 ? (_size+1) : _size);
-		}
-        if (use_8_bit_path_segments) {
-            return _size;
-        }
-        else {
-    		return _size*2;
-		}
-	}
-
-	std::string EPath::toString() const {
-		std::string msg = "[classId=" + std::to_string(_classId);
-		if (_size > 1) {
-			msg += " objectId=" + std::to_string(_objectId);
-			if (_size > 2) {
-				msg += " attributeId=" + std::to_string(_attributeId);
+				return buffer.data();
 			}
 		}
 
-		msg += "]";
-		return msg;
-	}
+		CipUint EPath::getClassId() const
+		{
+			return _classId;
+		}
 
-	void EPath::expandPaddedPath(const std::vector<uint8_t> &data) {
-		Buffer buffer(data);
+		CipUint EPath::getObjectId() const
+		{
+			return _objectId;
+		}
 
-		_classId = 0;
-		_objectId = 0;
-		_attributeId = 0;
-		_size = 0;
+		CipUint EPath::getAttributeId() const
+		{
+			return _attributeId;
+		}
 
-		for (int i = 0; i < data.size() && !buffer.empty(); ++i) {
-			EPathSegmentTypes segmentType;
-			CipUsint ignore = 0;
-			CipUsint byte;
-			CipUint word;
-			buffer >> reinterpret_cast<CipUsint&>(segmentType);
-			switch (segmentType) {
+		CipUsint EPath::getSizeInWords(bool use_8_bit_path_segments, bool use_rockwell_bit_path_segments) const
+		{
+			if (_classId == 0x91)
+			{
+				return _size;
+			}
+			if (use_rockwell_bit_path_segments)
+			{
+				return _size > 2 ? (_size + 2) : (_size > 1 ? (_size + 1) : _size);
+			}
+			if (use_8_bit_path_segments)
+			{
+				return _size;
+			}
+			else
+			{
+				return _size * 2;
+			}
+		}
+
+		std::string EPath::toString() const
+		{
+			std::string msg = "[classId=" + std::to_string(_classId);
+			if (_size > 1)
+			{
+				msg += " objectId=" + std::to_string(_objectId);
+				if (_size > 2)
+				{
+					msg += " attributeId=" + std::to_string(_attributeId);
+				}
+			}
+
+			msg += "]";
+			return msg;
+		}
+
+		void EPath::expandPaddedPath(const std::vector<uint8_t>& data)
+		{
+			Buffer buffer(data);
+
+			_classId = 0;
+			_objectId = 0;
+			_attributeId = 0;
+			_size = 0;
+
+			for (int i = 0; i < data.size() && !buffer.empty(); ++i)
+			{
+				EPathSegmentTypes segmentType;
+				CipUsint ignore = 0;
+				CipUsint byte;
+				CipUint word;
+				buffer >> reinterpret_cast<CipUsint&>(segmentType);
+				switch (segmentType)
+				{
 				case EPathSegmentTypes::CLASS_8_BITS:
 					buffer >> byte;
 					_classId = byte;
@@ -209,31 +238,36 @@ namespace cip {
 					break;
 				default:
 					throw std::runtime_error("Unknown EPATH segment =" + std::to_string(static_cast<int>(segmentType)));
+				}
 			}
-		}
 
-		if (!buffer.isValid()) {
-			throw std::runtime_error("Wrong EPATH format");
-		}
+			if (!buffer.isValid())
+			{
+				throw std::runtime_error("Wrong EPATH format");
+			}
 
-		if (_classId > 0) {
-			_size++;
-
-			if (_objectId > 0) {
+			if (_classId > 0)
+			{
 				_size++;
 
-				if (_attributeId > 0) {
+				if (_objectId > 0)
+				{
 					_size++;
+
+					if (_attributeId > 0)
+					{
+						_size++;
+					}
 				}
 			}
 		}
-	}
 
-	bool EPath::operator==(const EPath &other) const {
-		return _size == other._size
-			&&_classId == other._classId
-			&& _objectId == other._objectId
-			&& _attributeId == other._attributeId;
+		bool EPath::operator==(const EPath& other) const
+		{
+			return _size == other._size
+				&& _classId == other._classId
+				&& _objectId == other._objectId
+				&& _attributeId == other._attributeId;
+		}
 	}
-}
 }

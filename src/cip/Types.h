@@ -27,7 +27,7 @@ namespace cip {
   typedef uint64_t CipUlint; /**< 64-bit bit unsigned integer */
 
 
-	enum class CipDataTypes : CipUsint {
+  enum class CipDataTypes : CipUsint {
 		ANY = 0x00, /**< data type that can not be directly encoded */
 		BOOL = 0xC1, /**< boolean data type */
 		SINT = 0xC2, /**< 8-bit signed integer */
