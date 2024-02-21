@@ -38,7 +38,7 @@ int main() {
   }
 #endif
 
-  auto si = std::make_shared<SessionInfo>("127.0.0.1", 0xAF12, std::chrono::seconds(10));
+  auto si = std::make_shared<SessionInfo>("192.168.1.100", 0xAF12, std::chrono::seconds(10));
   auto messageRouter = std::make_shared<MessageRouter>();
 
   // Read attribute
@@ -56,6 +56,24 @@ int main() {
     Logger(LogLevel::ERROR) << "We got error=0x" << std::hex << response.getGeneralStatusCode();
   }
 
+
+  // Logger(LogLevel::INFO) << "Read TAG is";
+
+  // // Read TAG
+  // response = messageRouter->sendRequest(si, ServiceCodes::READ_TAG,
+  //                        EPath(0x01, 1, 1),
+  //                        {});
+
+  // if (response.getGeneralStatusCode() == GeneralStatusCodes::SUCCESS) {
+  //   Buffer buffer(response.getData());
+  //   CipUint vendorId;
+  //   buffer >> vendorId;
+
+  //   Logger(LogLevel::INFO) << "TAG is " << vendorId;
+  // } else {
+  //   Logger(LogLevel::ERROR) << "We got error=0x" << std::hex << response.getGeneralStatusCode();
+  // }
+
   //Write attribute
   // See OpenEr EDS 160 line
   Buffer assembly151;
@@ -71,15 +89,15 @@ int main() {
         << CipUsint(10);
 
 
-  response = messageRouter->sendRequest(si, ServiceCodes::SET_ATTRIBUTE_SINGLE,
-                      EPath(0x04, 151, 3),
-                      assembly151.data());
+  // response = messageRouter->sendRequest(si, ServiceCodes::SET_ATTRIBUTE_SINGLE,
+  //                     EPath(0x04, 151, 3),
+  //                     assembly151.data());
 
-  if (response.getGeneralStatusCode() == GeneralStatusCodes::SUCCESS) {
-    Logger(LogLevel::INFO) << "Writing is successful";
-  } else {
-    Logger(LogLevel::ERROR) << "We got error=0x" << std::hex << response.getGeneralStatusCode();
-  }
+  // if (response.getGeneralStatusCode() == GeneralStatusCodes::SUCCESS) {
+  //   Logger(LogLevel::INFO) << "Writing is successful";
+  // } else {
+  //   Logger(LogLevel::ERROR) << "We got error=0x" << std::hex << response.getGeneralStatusCode();
+  // }
 
 #if OS_Windows
   WSACleanup();

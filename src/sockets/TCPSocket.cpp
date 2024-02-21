@@ -144,6 +144,7 @@ namespace eipScanner {
 			int count = 0;
 			while (size > count) {
 				auto len = recv(_sockedFd, (char*)(recvBuffer.data() + count), size - count, 0);
+    			Logger(LogLevel::INFO) << "Receive len " << len;
 				if (len < 0) {
 					// Check for EINTR, in which case, better luck next time
 					if (BaseSocket::getLastError() == EIPSCANNER_SOCKET_ERROR(EINTR)) {

@@ -27,15 +27,15 @@ int main() {
   }
 #endif
 
-  auto si = std::make_shared<SessionInfo>("172.28.1.3", 0xAF12);
+  auto si = std::make_shared<SessionInfo>("192.168.1.100", 0xAF12);
   IdentityObject identityObject(1, si);
 
-  Logger(LogLevel::INFO) << identityObject.getVendorId()
-      << identityObject.getDeviceType()
-      << identityObject.getProductCode()
-      << identityObject.getRevision().toString()
-      << identityObject.getStatus()
-      << identityObject.getSerialNumber()
+  Logger(LogLevel::INFO) << identityObject.getVendorId() << " | "
+      << identityObject.getDeviceType() << " | "
+      << identityObject.getProductCode() << " | "
+      << identityObject.getRevision().toString() << " | "
+      << identityObject.getStatus() << " | "
+      << identityObject.getSerialNumber() << " | "
       << identityObject.getProductName();
 
 #if OS_Windows

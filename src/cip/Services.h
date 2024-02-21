@@ -35,7 +35,16 @@ namespace cip {
 		SET_MEMBER = 0x19,
 		INSERT_MEMBER = 0x1A,
 		REMOVE_MEMBER = 0x1B,
-		GROUP_SYNC = 0x1C
+		GROUP_SYNC = 0x1C,
+
+		/* Rockwell Custom Services */
+		UNKNOWN_TAG = 0x4B,
+		READ_TAG = 0x4C,
+		READ_TAG_FRAGMENTED = 0x52,
+		WRITE_TAG = 0x4D,
+		WRITE_TAG_FRAGMENTED = 0x53,
+		READ_MODIFY_WRITE = 0x4E,
+		GET_INSTANCE_ATTRIBUTE_LIST = 0x55
 		/* End CIP common services */
 	};
 

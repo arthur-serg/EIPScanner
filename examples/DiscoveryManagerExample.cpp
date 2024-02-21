@@ -26,7 +26,7 @@ int main() {
   }
 #endif
 
-  DiscoveryManager discoveryManager("172.28.255.255", 0xAF12, std::chrono::seconds(1));
+  DiscoveryManager discoveryManager("192.168.1.100", 0xAF12, std::chrono::seconds(1));
   auto devices = discoveryManager.discover();
 
   for (auto& device : devices) {

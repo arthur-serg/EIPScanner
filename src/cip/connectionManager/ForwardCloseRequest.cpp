@@ -20,8 +20,8 @@ namespace connectionManager {
 
 	std::vector <uint8_t> connectionManager::ForwardCloseRequest::pack() const {
 		Buffer buffer;
-		CipUsint timeTick = 0;
-		CipUsint timeOutTicks = 0;
+		CipUsint timeTick = 0x05;
+		CipUsint timeOutTicks = 0xF7;
 		CipUsint reserved = 0;
 
 		buffer << timeTick

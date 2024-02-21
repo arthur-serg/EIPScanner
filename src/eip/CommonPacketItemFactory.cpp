@@ -27,5 +27,11 @@ namespace eip {
 		buffer << connectionId << seqNumber;
 		return CommonPacketItem(CommonPacketItemIds::SEQUENCED_ADDRESS_ITEM, buffer.data());
 	}
+
+	CommonPacketItem CommonPacketItemFactory::createConnectedAddressItem(cip::CipUdint connectionId) const {
+		Buffer buffer;
+		buffer << connectionId;
+		return CommonPacketItem(CommonPacketItemIds::CONNECTION_ADDRESS_ITEM, buffer.data());
+	}
 }
 }

@@ -31,19 +31,20 @@ namespace eipScanner {
 	MessageRouterResponse
 	MessageRouter::sendRequest(SessionInfoIf::SPtr si, CipUsint service, const EPath &path,
 							   const std::vector<uint8_t> &data) const {
-		return this->sendRequest(si, service, path, data, {});
+		return this->sendRequest(si, service, path, data, {}, false);
 	}
 
 	MessageRouterResponse
 	MessageRouter::sendRequest(SessionInfoIf::SPtr si, CipUsint service, const EPath &path,
 							   const std::vector<uint8_t> &data,
-							   const std::vector<eip::CommonPacketItem>& additionalPacketItems) const {
+							   const std::vector<eip::CommonPacketItem>& additionalPacketItems,
+							   bool rockwellSegments) const {
 		assert(si);
 
 		Logger(LogLevel::INFO) << "Send request: service=0x" << std::hex << static_cast<int>(service)
 							   << " epath=" << path.toString();
 
-		MessageRouterRequest request{service, path, data, _use_8_bit_path_segments};
+		MessageRouterRequest request{service, path, data, _use_8_bit_path_segments, rockwellSegments};
 
 		CommonPacketItemFactory commonPacketItemFactory;
 		CommonPacket commonPacket;
@@ -82,6 +83,19 @@ namespace eipScanner {
 
 	MessageRouterResponse
 	MessageRouter::sendRequest(SessionInfoIf::SPtr si, CipUsint service, const EPath &path) const {
-		return this->sendRequest(si, service, path, {}, {});
+		return this->sendRequest(si, service, path, {}, {}, false);
+	}
+
+	MessageRouterResponse
+	MessageRouter::sendRequest(SessionInfoIf::SPtr si, cip::CipUsint service, const cip::EPath& path, bool rockwellSegments) const {
+		return this->sendRequest(si, service, path, {}, {}, rockwellSegments);
+	}
+
+
+	MessageRouterResponse
+	MessageRouter::sendRequest(SessionInfoIf::SPtr si, CipUsint service, const EPath &path,
+							   const std::vector<uint8_t> &data,
+							   const std::vector<eip::CommonPacketItem>& additionalPacketItems) const {
+		return this->sendRequest(si, service, path, data, additionalPacketItems, false);
 	}
 }

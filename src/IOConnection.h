@@ -64,6 +64,9 @@ namespace eipScanner {
          */
         void setSendDataListener(SendDataHandle handle);
 
+        cip::CipUdint getO2TNetworkConnectionId();
+		cip::CipUdint geto2tSequenceNumber();
+
 	private:
 		IOConnection();
 		void notifyReceiveData(const std::vector<uint8_t> &data);

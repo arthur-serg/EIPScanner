@@ -47,7 +47,8 @@ namespace eipScanner {
 		 */
 		virtual cip::MessageRouterResponse sendRequest(SessionInfoIf::SPtr si, cip::CipUsint service,
 				const cip::EPath& path, const std::vector<uint8_t>& data,
-				const std::vector<eip::CommonPacketItem>& additionalPacketItems) const;
+				const std::vector<eip::CommonPacketItem>& additionalPacketItems,
+				bool rockwellSegments) const;
 
 		/**
 		 * @brief Sends an explicit requests to the EIP adapter by calling a CIP service
@@ -74,6 +75,13 @@ namespace eipScanner {
 		virtual cip::MessageRouterResponse sendRequest(SessionInfoIf::SPtr si, cip::CipUsint service,
 													   const cip::EPath& path) const;
 
+
+		virtual cip::MessageRouterResponse sendRequest(SessionInfoIf::SPtr si, cip::CipUsint service,
+													   const cip::EPath& path, bool rockwellSegments) const;
+
+		virtual cip::MessageRouterResponse sendRequest(SessionInfoIf::SPtr si, cip::CipUsint service,
+				const cip::EPath& path, const std::vector<uint8_t>& data,
+				const std::vector<eip::CommonPacketItem>& additionalPacketItems) const;
     private:
         bool _use_8_bit_path_segments;
 	};

@@ -25,6 +25,7 @@ namespace eipScanner {
 		 * @return the received EIP Encapsulation packet
 		 */
 		virtual eip::EncapsPacket sendAndReceive(const eip::EncapsPacket &packet) const = 0;
+		virtual void send(const eip::EncapsPacket &packet) const = 0;
 
 		/**
 		 * Gets the handle of the current EIP session

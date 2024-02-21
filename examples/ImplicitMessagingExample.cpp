@@ -36,7 +36,7 @@ int main() {
   }
 #endif
 
-  auto si = std::make_shared<SessionInfo>("172.28.1.3", 0xAF12);
+  auto si = std::make_shared<SessionInfo>("192.168.1.100", 0xAF12);
 
   // Implicit messaging
   ConnectionManager connectionManager;

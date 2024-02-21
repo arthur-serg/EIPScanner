@@ -68,6 +68,11 @@ namespace eipScanner {
 		return recvPacket;
 	}
 
+
+	void SessionInfo::send(const EncapsPacket& packet) const {
+		_socket.Send(packet.pack());
+	}
+
 	cip::CipUdint SessionInfo::getSessionHandle() const {
 		return _sessionHandle;
 	}

@@ -124,7 +124,7 @@ TEST_F(TestParameterObject, ShouldReadAllFullDataInConstructor) {
 	EXPECT_EQ(1, parameterObject.getPrecision());
 
 	EXPECT_DOUBLE_EQ(0.35, parameterObject.getEngValue<cip::CipUdint>());
-	EXPECT_DOUBLE_EQ(0.3, parameterObject.getEngMinValue<cip::CipUdint>());
+	EXPECT_DOUBLE_EQ(0.3 , parameterObject.getEngMinValue<cip::CipUdint>());
 	EXPECT_DOUBLE_EQ(0.55, parameterObject.getEngMaxValue<cip::CipUdint>());
 	EXPECT_DOUBLE_EQ(0.45, parameterObject.getEngDefaultValue<cip::CipUdint>());
 }

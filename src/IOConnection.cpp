@@ -61,6 +61,14 @@ namespace eipScanner {
         	_sendDataHandle = std::move(handle);
 	}
 
+	cip::CipUdint IOConnection::getO2TNetworkConnectionId() {
+		return _o2tNetworkConnectionId;
+	}
+
+	cip::CipUdint IOConnection::geto2tSequenceNumber() {
+		return _o2tSequenceNumber;
+	}
+
 	void IOConnection::setCloseListener(CloseHandle handle) {
 		_closeHandle = std::move(handle);
 	}

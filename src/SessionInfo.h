@@ -54,6 +54,8 @@ namespace eipScanner {
 		 */
 		eip::EncapsPacket sendAndReceive(const eip::EncapsPacket& packet) const override;
 
+		void send(const eip::EncapsPacket &packet) const override;
+
 		/**
 		 * @sa SessionInfo::getSessionHandle
 		 * @return
